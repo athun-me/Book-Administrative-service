@@ -12,10 +12,10 @@ import (
 type AdminHandler struct {
 	UseCase    interfaces.AdminUseCase
 	jwtUseCase interfaces.JwtUseCase
-	pb.AuthServiceClient
+	pb.AdminServiceServer
 }
 
-func NewAdminHandler(useCase interfaces.AdminUseCase, jwtUseCase interfaces.JwtUseCase) *UseHandler {
+func NewAdminHandler(useCase interfaces.AdminUseCase, jwtUseCase interfaces.JwtUseCase) *AdminHandler {
 	return &AdminHandler{
 		UseCase:    useCase,
 		jwtUseCase: jwtUseCase,
@@ -46,5 +46,22 @@ func (h *AdminHandler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Log
 	return &pb.LoginResponse{
 		Status:      http.StatusOK,
 		Accesstoken: accessToken,
+	}, nil
+}
+
+func (u *AdminHandler) ChangePassword(ctx context.Context, req *pb.ChangePasswordRequest) (*pb.ForgotPasswordResponse, error) {
+	admin := domain.Admin{
+		Id:       uint(req.Id),
+		Password: req.Password,
+	}
+	err := u.UseCase.ChangePassword(admin)
+	if err != nil {
+		return &pb.ForgotPasswordResponse{
+			Status: http.StatusNotFound,
+			Error:  "Error in changing the password",
+		}, err
+	}
+	return &pb.ForgotPasswordResponse{
+		Status: http.StatusOK,
 	}, nil
 }

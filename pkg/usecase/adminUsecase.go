@@ -1,9 +1,12 @@
 package usecas
 
 import (
+	"errors"
+
 	"githum.com/athunlal/bookNowAdmin-svc/pkg/domain"
 	intereface "githum.com/athunlal/bookNowAdmin-svc/pkg/repository/interface"
 	usecas "githum.com/athunlal/bookNowAdmin-svc/pkg/usecase/interface"
+	"githum.com/athunlal/bookNowAdmin-svc/pkg/utils"
 )
 
 type adminUseCase struct {
@@ -11,23 +14,35 @@ type adminUseCase struct {
 }
 
 // ChangePassword implements interfaces.AdminUseCase.
-func (*adminUseCase) ChangePassword(Admin domain.Admin) error {
-	panic("unimplemented")
+func (use *adminUseCase) ChangePassword(Admin domain.Admin) error {
+	// user.Password = utils.HashPassword(user.Password)
+	err := use.Repo.ChangePassword(Admin)
+	if err != nil {
+		return errors.New("Could not change the password")
+	}
+	return nil
 }
 
-// Create implements interfaces.AdminUseCase.
-func (*adminUseCase) Create(admin domain.Admin) error {
-	panic("unimplemented")
-}
+// Login implements interfaces.AdminUseCase.
+func (use *adminUseCase) Login(Admin domain.Admin) (domain.Admin, error) {
+	var adminDetatils domain.Admin
+	var err error
+	if Admin.Username != "" {
+		adminDetatils, err = use.Repo.FindByAdminName(Admin)
+		if err != nil {
+			return adminDetatils, errors.New("User not found")
+		}
+	} else if Admin.Email != "" {
+		adminDetatils, err = use.Repo.FindByAdminEmail(Admin)
+		if err != nil {
+			return adminDetatils, errors.New("User not found")
+		}
+	}
 
-// FindByAdminEmail implements interfaces.AdminUseCase.
-func (*adminUseCase) FindByAdminEmail(admin domain.Admin) (domain.Admin, error) {
-	panic("unimplemented")
-}
-
-// FindByAdminName implements interfaces.AdminUseCase.
-func (*adminUseCase) FindByAdminName(user domain.Admin) (domain.Admin, error) {
-	panic("unimplemented")
+	if !utils.VerifyPassword(Admin.Password, adminDetatils.Password) {
+		return adminDetatils, errors.New("Password is not matched or worg")
+	}
+	return adminDetatils, nil
 }
 
 func NewAdminUseCase(repo intereface.AdminRepo) usecas.AdminUseCase {

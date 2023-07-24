@@ -4,13 +4,10 @@ package auth;
 
 option go_package = "./pkg/pb";
 
-service AuthService {
+service AdminService {
   rpc Login(LoginRequest) returns (LoginResponse) {}
-  rpc ForgotPassword(ForgotPasswordRequest) returns (ForgotPasswordResponse){}
   rpc ChangePassword(ChangePasswordRequest) returns (ForgotPasswordResponse) {}
 }
-
-
 
 // Login
 
@@ -27,10 +24,6 @@ message LoginResponse{
 }
 
 // Forgot Password
-
-message ForgotPasswordRequest{
-  string email = 1;
-}
 
 message ForgotPasswordResponse{
   int64 status = 1;
