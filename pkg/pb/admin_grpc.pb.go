@@ -32,7 +32,7 @@ func NewAdminServiceClient(cc grpc.ClientConnInterface) AdminServiceClient {
 
 func (c *adminServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
 	out := new(LoginResponse)
-	err := c.cc.Invoke(ctx, "/auth.AdminService/Login", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/admin.AdminService/Login", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (c *adminServiceClient) Login(ctx context.Context, in *LoginRequest, opts .
 
 func (c *adminServiceClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ForgotPasswordResponse, error) {
 	out := new(ForgotPasswordResponse)
-	err := c.cc.Invoke(ctx, "/auth.AdminService/ChangePassword", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/admin.AdminService/ChangePassword", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ func _AdminService_Login_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auth.AdminService/Login",
+		FullMethod: "/admin.AdminService/Login",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdminServiceServer).Login(ctx, req.(*LoginRequest))
@@ -108,7 +108,7 @@ func _AdminService_ChangePassword_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auth.AdminService/ChangePassword",
+		FullMethod: "/admin.AdminService/ChangePassword",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdminServiceServer).ChangePassword(ctx, req.(*ChangePasswordRequest))
@@ -120,7 +120,7 @@ func _AdminService_ChangePassword_Handler(srv interface{}, ctx context.Context, 
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var AdminService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "auth.AdminService",
+	ServiceName: "admin.AdminService",
 	HandlerType: (*AdminServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
