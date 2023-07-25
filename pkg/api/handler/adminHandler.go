@@ -49,19 +49,19 @@ func (h *AdminHandler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Log
 	}, nil
 }
 
-func (u *AdminHandler) ChangePassword(ctx context.Context, req *pb.ChangePasswordRequest) (*pb.ForgotPasswordResponse, error) {
+func (u *AdminHandler) ChangePassword(ctx context.Context, req *pb.ChangePasswordRequest) (*pb.ChangePassworResponse, error) {
 	admin := domain.Admin{
 		Id:       uint(req.Id),
 		Password: req.Password,
 	}
 	err := u.UseCase.ChangePassword(admin)
 	if err != nil {
-		return &pb.ForgotPasswordResponse{
+		return &pb.ChangePassworResponse{
 			Status: http.StatusNotFound,
 			Error:  "Error in changing the password",
 		}, err
 	}
-	return &pb.ForgotPasswordResponse{
+	return &pb.ChangePassworResponse{
 		Status: http.StatusOK,
 	}, nil
 }

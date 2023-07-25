@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AdminServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
-	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ForgotPasswordResponse, error)
+	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePassworResponse, error)
 }
 
 type adminServiceClient struct {
@@ -39,8 +39,8 @@ func (c *adminServiceClient) Login(ctx context.Context, in *LoginRequest, opts .
 	return out, nil
 }
 
-func (c *adminServiceClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ForgotPasswordResponse, error) {
-	out := new(ForgotPasswordResponse)
+func (c *adminServiceClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePassworResponse, error) {
+	out := new(ChangePassworResponse)
 	err := c.cc.Invoke(ctx, "/admin.AdminService/ChangePassword", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (c *adminServiceClient) ChangePassword(ctx context.Context, in *ChangePassw
 // for forward compatibility
 type AdminServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
-	ChangePassword(context.Context, *ChangePasswordRequest) (*ForgotPasswordResponse, error)
+	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePassworResponse, error)
 	mustEmbedUnimplementedAdminServiceServer()
 }
 
@@ -64,7 +64,7 @@ type UnimplementedAdminServiceServer struct {
 func (UnimplementedAdminServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedAdminServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ForgotPasswordResponse, error) {
+func (UnimplementedAdminServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePassworResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
 func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}

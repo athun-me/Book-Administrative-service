@@ -30,7 +30,7 @@ func NewGrpcServer(adminHandler *handler.AdminHandler, grpcPort string) {
 func NewServerHttp(adminHandler *handler.AdminHandler) *ServerHttp {
 	engine := gin.New()
 
-	go NewGrpcServer(adminHandler, "8890")
+	go NewGrpcServer(adminHandler, "8891")
 
 	engine.Use(gin.Logger())
 	return &ServerHttp{

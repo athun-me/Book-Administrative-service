@@ -6,7 +6,7 @@ option go_package = "./pkg/pb";
 
 service AdminService {
   rpc Login(LoginRequest) returns (LoginResponse) {}
-  rpc ChangePassword(ChangePasswordRequest) returns (ForgotPasswordResponse) {}
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePassworResponse) {}
 }
 
 // Login
@@ -25,7 +25,7 @@ message LoginResponse{
 
 // Forgot Password
 
-message ForgotPasswordResponse{
+message ChangePassworResponse{
   int64 status = 1;
   string error = 2;
 }
