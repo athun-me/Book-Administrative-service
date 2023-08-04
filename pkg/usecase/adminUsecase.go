@@ -13,9 +13,20 @@ type adminUseCase struct {
 	Repo intereface.AdminRepo
 }
 
+// ValidateJwtAdmin implements interfaces.AdminUseCase.
+func (use *adminUseCase) ValidateJwtAdmin(adminid uint) (domain.Admin, error) {
+	admin, err := use.Repo.FindAdminById(adminid)
+	if err != nil {
+		return admin, errors.New("Unauthorized User")
+	}
+	return admin, nil
+
+}
+
 // ChangePassword implements interfaces.AdminUseCase.
 func (use *adminUseCase) ChangePassword(Admin domain.Admin) error {
 	// user.Password = utils.HashPassword(user.Password)
+	Admin.Password = utils.HashPassword(Admin.Password)
 	err := use.Repo.ChangePassword(Admin)
 	if err != nil {
 		return errors.New("Could not change the password")
@@ -38,7 +49,6 @@ func (use *adminUseCase) Login(Admin domain.Admin) (domain.Admin, error) {
 			return adminDetatils, errors.New("User not found")
 		}
 	}
-
 	if !utils.VerifyPassword(Admin.Password, adminDetatils.Password) {
 		return adminDetatils, errors.New("Password is not matched or worg")
 	}

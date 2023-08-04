@@ -10,6 +10,13 @@ type adminDatabase struct {
 	DB *gorm.DB
 }
 
+// FindAdminById implements intereface.AdminRepo.
+func (r *adminDatabase) FindAdminById(adminid uint) (domain.Admin, error) {
+	admin := domain.Admin{}
+	result := r.DB.First(&admin, "id = ?", adminid).Error
+	return admin, result
+}
+
 // DeleteUser implements intereface.AdminRepo.
 func (r *adminDatabase) DeleteUser(user domain.Admin) error {
 	result := r.DB.Exec("DELETE FROM users WHERE email LIKE ?", user.Email).Error

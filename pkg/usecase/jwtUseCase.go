@@ -1,7 +1,9 @@
 package usecas
 
 import (
+	"fmt"
 	"os"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 	"githum.com/athunlal/bookNowAdmin-svc/pkg/domain"
@@ -13,18 +15,47 @@ type jwtUseCase struct {
 }
 
 // GenerateAccessToken implements interfaces.JwtUseCase.
-func (*jwtUseCase) GenerateAccessToken(adminid int, email string, role string) (string, error) {
-	panic("unimplemented")
+func (u *jwtUseCase) GenerateAccessToken(adminid int, email string, role string) (string, error) {
+	claims := domain.JwtClaims{
+		Adminid: uint(adminid),
+		Email:   email,
+		Source:  "AccessToken",
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Local().Add(time.Minute * time.Duration(500)).Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	accessToken, err := token.SignedString([]byte(u.SecretKey))
+
+	return accessToken, err
 }
 
 // GetTokenFromString implements interfaces.JwtUseCase.
-func (*jwtUseCase) GetTokenFromString(signedToken string, claims *domain.JwtClaims) (*jwt.Token, error) {
-	panic("unimplemented")
+func (u *jwtUseCase) GetTokenFromString(signedToken string, claims *domain.JwtClaims) (*jwt.Token, error) {
+	return jwt.ParseWithClaims(signedToken, claims, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(u.SecretKey), nil
+	})
 }
 
 // VerifyToken implements interfaces.JwtUseCase.
-func (*jwtUseCase) VerifyToken(token string) (bool, *domain.JwtClaims) {
-	panic("unimplemented")
+func (u *jwtUseCase) VerifyToken(token string) (bool, *domain.JwtClaims) {
+	claims := &domain.JwtClaims{}
+
+	tkn, err := u.GetTokenFromString(token, claims)
+	if err != nil {
+		return false, claims
+	}
+	if tkn.Valid {
+		if err := claims.Valid(); err != nil {
+			return false, claims
+		}
+	}
+	return true, claims
+
 }
 
 func NewJWTuseCase() interfaces.JwtUseCase {

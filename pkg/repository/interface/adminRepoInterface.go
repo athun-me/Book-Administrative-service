@@ -7,5 +7,6 @@ type AdminRepo interface {
 	FindByAdminName(user domain.Admin) (domain.Admin, error)
 	FindByAdminEmail(admin domain.Admin) (domain.Admin, error)
 	ChangePassword(Admin domain.Admin) error
+	FindAdminById(adminid uint) (domain.Admin, error)
 	DeleteUser(user domain.Admin) error
 }

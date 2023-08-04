@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"githum.com/athunlal/bookNowAdmin-svc/pkg/domain"
@@ -49,19 +50,44 @@ func (h *AdminHandler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Log
 	}, nil
 }
 
-func (u *AdminHandler) ChangePassword(ctx context.Context, req *pb.ChangePasswordRequest) (*pb.ChangePassworResponse, error) {
+func (u *AdminHandler) ChangePassword(ctx context.Context, req *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
 	admin := domain.Admin{
 		Id:       uint(req.Id),
 		Password: req.Password,
 	}
 	err := u.UseCase.ChangePassword(admin)
 	if err != nil {
-		return &pb.ChangePassworResponse{
+		return &pb.ChangePasswordResponse{
 			Status: http.StatusNotFound,
 			Error:  "Error in changing the password",
 		}, err
 	}
-	return &pb.ChangePassworResponse{
+	return &pb.ChangePasswordResponse{
 		Status: http.StatusOK,
+	}, nil
+}
+
+func (u *AdminHandler) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.ValidateResponse, error) {
+	adminData := domain.Admin{}
+	ok, claims := u.jwtUseCase.VerifyToken(req.Accesstoken)
+	if !ok {
+		return &pb.ValidateResponse{
+			Status: http.StatusUnauthorized,
+			Error:  "Token Verification Failed",
+		}, errors.New("Token failed")
+	}
+	adminData, err := u.UseCase.ValidateJwtAdmin(claims.Adminid)
+	if err != nil {
+		return &pb.ValidateResponse{
+			Status:  http.StatusUnauthorized,
+			Adminid: int64(adminData.Id),
+			Error:   "Admin not found with essesntial token credential",
+			Source:  claims.Source,
+		}, err
+	}
+	return &pb.ValidateResponse{
+		Status:  http.StatusOK,
+		Adminid: int64(adminData.Id),
+		Source:  claims.Source,
 	}, nil
 }

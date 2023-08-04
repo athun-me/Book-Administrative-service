@@ -4,9 +4,11 @@ package admin;
 
 option go_package = "./pkg/pb";
 
+
 service AdminService {
   rpc Login(LoginRequest) returns (LoginResponse) {}
-  rpc ChangePassword(ChangePasswordRequest) returns (ChangePassworResponse) {}
+  rpc Validate(ValidateRequest) returns (ValidateResponse) {}
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {}
 }
 
 // Login
@@ -25,7 +27,7 @@ message LoginResponse{
 
 // Forgot Password
 
-message ChangePassworResponse{
+message ChangePasswordResponse{
   int64 status = 1;
   string error = 2;
 }
@@ -37,4 +39,17 @@ message ChangePasswordRequest{
   string password = 2;
 }
 
+
+//Validate
+
+message ValidateRequest{
+  string accesstoken = 1;
+}
+
+message ValidateResponse{
+  int64 status = 1;
+  string error = 2;
+  int64 adminid = 3;
+  string source = 4;
+}
 
