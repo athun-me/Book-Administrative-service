@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"githum.com/athunlal/bookNowAdmin-svc/pkg/domain"
@@ -68,26 +67,25 @@ func (u *AdminHandler) ChangePassword(ctx context.Context, req *pb.ChangePasswor
 	}, nil
 }
 
-func (u *AdminHandler) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.ValidateResponse, error) {
-	fmt.Println("reached here ====>>>>>", req.Accesstoken)
+func (u *AdminHandler) ValidateAdmin(ctx context.Context, req *pb.ValidateAdminRequest) (*pb.ValidateAdminResponse, error) {
 	adminData := domain.Admin{}
 	ok, claims := u.jwtUseCase.VerifyToken(req.Accesstoken)
 	if !ok {
-		return &pb.ValidateResponse{
+		return &pb.ValidateAdminResponse{
 			Status: http.StatusUnauthorized,
 			Error:  "Token Verification Failed",
 		}, errors.New("Token failed")
 	}
 	adminData, err := u.UseCase.ValidateJwtAdmin(claims.Adminid)
 	if err != nil {
-		return &pb.ValidateResponse{
+		return &pb.ValidateAdminResponse{
 			Status:  http.StatusUnauthorized,
 			Adminid: int64(adminData.Id),
 			Error:   "Admin not found with essesntial token credential",
 			Source:  claims.Source,
 		}, err
 	}
-	return &pb.ValidateResponse{
+	return &pb.ValidateAdminResponse{
 		Status:  http.StatusOK,
 		Adminid: int64(adminData.Id),
 		Source:  claims.Source,

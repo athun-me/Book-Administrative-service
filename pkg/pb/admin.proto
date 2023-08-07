@@ -2,7 +2,8 @@ syntax = "proto3";
 
 package admin;
 
-option go_package = "pkg/admin/pb";
+option go_package = "./pkg/pb";
+
 
 service AdminService {
   rpc Login(LoginRequest) returns (LoginResponse) {}
@@ -10,37 +11,45 @@ service AdminService {
   rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {}
 }
 
-message LoginRequest {
+// Login
+
+message LoginRequest{
   string username = 1;
   string email = 2;
   string password = 3;
 }
 
-message LoginResponse {
+message LoginResponse{
   int64 status = 1;
   string error = 2;
-  string accesstoken = 3;
+  string accesstoken =3;
 }
 
-message ChangePasswordResponse {
+// Forgot Password
+
+message ChangePasswordResponse{
   int64 status = 1;
   string error = 2;
 }
 
-message ChangePasswordRequest {
-  int64 id = 1;
+// Change Password
+
+message ChangePasswordRequest{
+  int64  id = 1;
   string password = 2;
 }
 
-message ValidateAdminRequest {
+
+//Validate
+
+message ValidateAdminRequest{
   string accesstoken = 1;
 }
 
-message ValidateAdminResponse {
+message ValidateAdminResponse{
   int64 status = 1;
   string error = 2;
   int64 adminid = 3;
   string source = 4;
 }
-
 
