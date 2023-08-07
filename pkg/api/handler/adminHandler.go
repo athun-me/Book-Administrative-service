@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"githum.com/athunlal/bookNowAdmin-svc/pkg/domain"
@@ -68,6 +69,7 @@ func (u *AdminHandler) ChangePassword(ctx context.Context, req *pb.ChangePasswor
 }
 
 func (u *AdminHandler) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.ValidateResponse, error) {
+	fmt.Println("reached here ====>>>>>", req.Accesstoken)
 	adminData := domain.Admin{}
 	ok, claims := u.jwtUseCase.VerifyToken(req.Accesstoken)
 	if !ok {
