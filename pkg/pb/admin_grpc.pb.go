@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AdminServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
-	ValidateAdmin(ctx context.Context, in *ValidateAdminRequest, opts ...grpc.CallOption) (*ValidateAdminResponse, error)
+	AdminValidate(ctx context.Context, in *AdminValidateRequest, opts ...grpc.CallOption) (*AdminValidateResponse, error)
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
 }
 
@@ -40,9 +40,9 @@ func (c *adminServiceClient) Login(ctx context.Context, in *LoginRequest, opts .
 	return out, nil
 }
 
-func (c *adminServiceClient) ValidateAdmin(ctx context.Context, in *ValidateAdminRequest, opts ...grpc.CallOption) (*ValidateAdminResponse, error) {
-	out := new(ValidateAdminResponse)
-	err := c.cc.Invoke(ctx, "/admin.AdminService/ValidateAdmin", in, out, opts...)
+func (c *adminServiceClient) AdminValidate(ctx context.Context, in *AdminValidateRequest, opts ...grpc.CallOption) (*AdminValidateResponse, error) {
+	out := new(AdminValidateResponse)
+	err := c.cc.Invoke(ctx, "/admin.AdminService/AdminValidate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (c *adminServiceClient) ChangePassword(ctx context.Context, in *ChangePassw
 // for forward compatibility
 type AdminServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
-	ValidateAdmin(context.Context, *ValidateAdminRequest) (*ValidateAdminResponse, error)
+	AdminValidate(context.Context, *AdminValidateRequest) (*AdminValidateResponse, error)
 	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
 	mustEmbedUnimplementedAdminServiceServer()
 }
@@ -75,8 +75,8 @@ type UnimplementedAdminServiceServer struct {
 func (UnimplementedAdminServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedAdminServiceServer) ValidateAdmin(context.Context, *ValidateAdminRequest) (*ValidateAdminResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ValidateAdmin not implemented")
+func (UnimplementedAdminServiceServer) AdminValidate(context.Context, *AdminValidateRequest) (*AdminValidateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminValidate not implemented")
 }
 func (UnimplementedAdminServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
@@ -112,20 +112,20 @@ func _AdminService_Login_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdminService_ValidateAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ValidateAdminRequest)
+func _AdminService_AdminValidate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdminValidateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdminServiceServer).ValidateAdmin(ctx, in)
+		return srv.(AdminServiceServer).AdminValidate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/admin.AdminService/ValidateAdmin",
+		FullMethod: "/admin.AdminService/AdminValidate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminServiceServer).ValidateAdmin(ctx, req.(*ValidateAdminRequest))
+		return srv.(AdminServiceServer).AdminValidate(ctx, req.(*AdminValidateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -160,8 +160,8 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AdminService_Login_Handler,
 		},
 		{
-			MethodName: "ValidateAdmin",
-			Handler:    _AdminService_ValidateAdmin_Handler,
+			MethodName: "AdminValidate",
+			Handler:    _AdminService_AdminValidate_Handler,
 		},
 		{
 			MethodName: "ChangePassword",

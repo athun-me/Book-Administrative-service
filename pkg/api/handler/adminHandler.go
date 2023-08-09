@@ -67,25 +67,26 @@ func (u *AdminHandler) ChangePassword(ctx context.Context, req *pb.ChangePasswor
 	}, nil
 }
 
-func (u *AdminHandler) ValidateAdmin(ctx context.Context, req *pb.ValidateAdminRequest) (*pb.ValidateAdminResponse, error) {
+func (u *AdminHandler) AdminValidate(ctx context.Context, req *pb.AdminValidateRequest) (*pb.AdminValidateResponse, error) {
+
 	adminData := domain.Admin{}
 	ok, claims := u.jwtUseCase.VerifyToken(req.Accesstoken)
 	if !ok {
-		return &pb.ValidateAdminResponse{
+		return &pb.AdminValidateResponse{
 			Status: http.StatusUnauthorized,
 			Error:  "Token Verification Failed",
 		}, errors.New("Token failed")
 	}
 	adminData, err := u.UseCase.ValidateJwtAdmin(claims.Adminid)
 	if err != nil {
-		return &pb.ValidateAdminResponse{
+		return &pb.AdminValidateResponse{
 			Status:  http.StatusUnauthorized,
 			Adminid: int64(adminData.Id),
 			Error:   "Admin not found with essesntial token credential",
 			Source:  claims.Source,
 		}, err
 	}
-	return &pb.ValidateAdminResponse{
+	return &pb.AdminValidateResponse{
 		Status:  http.StatusOK,
 		Adminid: int64(adminData.Id),
 		Source:  claims.Source,
