@@ -8,6 +8,17 @@ service AdminService {
   rpc Login(LoginRequest) returns (LoginResponse) {}
   rpc AdminValidate(AdminValidateRequest) returns (AdminValidateResponse) {}
   rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {}
+  rpc Register(RegisterRequest) returns (RegisterResponse) {}
+}
+
+message RegisterRequest {
+    string adminname = 1;
+    string password = 2;
+}
+  
+message RegisterResponse {
+    int64 status = 1;
+    string error = 2;
 }
 
 message LoginRequest {
